@@ -5,15 +5,16 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require("cors");
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+dotenv.config()
+
 mongoose
-.connect('')
+.connect(process.env.MONGODB_URI)
 .then(() => console.log("Database connected"))
 .catch((err) => console.log(err));
 
-var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var catsRouter = require('./routes/cats');
-var dogsRouter = require('./routes/dogs');
 
 var app = express();
 
@@ -28,11 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
 app.use('/users', usersRouter);
-//http://localhost:3000/cats/
-app.use('/cats', catsRouter);
-app.use('/dogs', dogsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

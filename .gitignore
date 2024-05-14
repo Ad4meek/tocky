@@ -9008,3 +9008,4 @@ client/node_modules/yocto-queue/index.js
 client/node_modules/yocto-queue/license
 client/node_modules/yocto-queue/package.json
 client/node_modules/yocto-queue/readme.md
+server/.env
