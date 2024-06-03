@@ -1,6 +1,11 @@
 .tocka {
-    background-image: url("../../assets/tocky.png");
+    background-image: url("../../assets/spinTypes.png");
     width: 200px;
     height: 200px;
     object-fit: contain;
+}
+
+.spinValue {
+    display: flex;
+    justify-content: space-around;
 }
