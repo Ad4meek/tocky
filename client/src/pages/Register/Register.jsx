@@ -5,6 +5,8 @@ import { createUser } from "../../models/User";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 export default function Register() {
   const [formData, setFormData] = useState();
@@ -65,6 +67,15 @@ export default function Register() {
           required
           onChange={(e) => handleChange(e)}
         />
+        <br />
+        <div className="age_control">
+          <p>I'am over 18 years old</p>{" "}
+          <FormControlLabel
+            required
+            control={<Checkbox />}
+            onChange={(e) => handleChange(e)}
+          />
+        </div>
 
         <br />
         <Button onClick={handlePost} variant="contained">
