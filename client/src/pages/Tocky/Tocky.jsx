@@ -9,16 +9,21 @@ export default function Tocky() {
     const [spinValue, setSpinValue] = useState(1);
     const [spinValueIndex, setSpinValueIndex] = useState(0);
     const spinValuesConstant = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
-    const [backgroundPosition, setBackgroundPosition] = useState("0px 0px");
+    const [backgroundPosition, setBackgroundPosition] = useState(Array(9).fill("0px 0px"));
+
+    console.log(backgroundPosition);
 
     const repeat = () => {
         console.log("točka", spinValue);
 
-        const num = randomNumber(spinTypesArray.length);
-        const spinType = spinTypesArray[num];
-        const position = spinTypes[spinType].position;
-        console.log(position);
-        setBackgroundPosition(`${position.x}px ${position.y}px`);
+        const newBackgroundPositions = []
+        for (let i = 0; i < backgroundPosition.length; i++) {
+            const num = randomNumber(spinTypesArray.length);
+            const spinType = spinTypesArray[num];
+            const newPosition = spinTypes[spinType].position;
+            newBackgroundPositions.push(`${newPosition.x}px ${newPosition.y}px`);
+        }
+        setBackgroundPosition(newBackgroundPositions)
     };
 
     const add = () => {
@@ -46,8 +51,20 @@ export default function Tocky() {
     return (
         <>
             <h1>tocky</h1>
-            <div className="tocka" style={{backgroundPosition: backgroundPosition}}></div>
-            <p>hodnota sazky</p>
+            <div className="spinGrid">
+                {backgroundPosition.map((position, index) => {
+                    return <div className="tocka" style={{ backgroundPosition: position }} key={index}></div>
+                })}
+                {/* <div className="tocka" style={{ backgroundPosition: backgroundPosition }}></div>
+                <div className="tocka" style={{ backgroundPosition: backgroundPosition }}></div>
+                <div className="tocka" style={{ backgroundPosition: backgroundPosition }}></div>
+                <div className="tocka" style={{ backgroundPosition: backgroundPosition }}></div>
+                <div className="tocka" style={{ backgroundPosition: backgroundPosition }}></div>
+                <div className="tocka" style={{ backgroundPosition: backgroundPosition }}></div>
+                <div className="tocka" style={{ backgroundPosition: backgroundPosition }}></div>
+                <div className="tocka" style={{ backgroundPosition: backgroundPosition }}></div>
+                <div className="tocka" style={{ backgroundPosition: backgroundPosition }}></div> */}
+            </div>
             <div className="spinValue">
                 <button onClick={remove}>
                     <RemoveIcon></RemoveIcon>

@@ -20,13 +20,6 @@
         },
         "win": 2
     },
-    "heart": {
-        "position": {
-            "x": 600,
-            "y": 0
-        },
-        "win": 2
-    },
     "banana": {
         "position": {
             "x": 0,
@@ -44,13 +37,6 @@
     "dollar": {
         "position": {
             "x": 400,
-            "y": 200
-        },
-        "win": 2
-    },
-    "bar": {
-        "position": {
-            "x": 600,
             "y": 200
         },
         "win": 2
@@ -76,13 +62,6 @@
         },
         "win": 2
     },
-    "leaf": {
-        "position": {
-            "x": 600,
-            "y": 400
-        },
-        "win": 2
-    },
     "melon": {
         "position": {
             "x": 0,
@@ -100,13 +79,6 @@
     "plum": {
         "position": {
             "x": 400,
-            "y": 600
-        },
-        "win": 2
-    },
-    "berry": {
-        "position": {
-            "x": 600,
             "y": 600
         },
         "win": 2
