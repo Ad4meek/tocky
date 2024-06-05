@@ -10,20 +10,46 @@ export default function Tocky() {
     const [spinValueIndex, setSpinValueIndex] = useState(0);
     const spinValuesConstant = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
     const [backgroundPosition, setBackgroundPosition] = useState(Array(9).fill("0px 0px"));
+    const [spinnedTypes, setSpinnedTypes] = useState([]);
 
-    console.log(backgroundPosition);
+    // console.log(backgroundPosition);
 
     const repeat = () => {
         console.log("točka", spinValue);
 
-        const newBackgroundPositions = []
+        const newBackgroundPositions = [];
+        const newSpinnedTypes = [];
         for (let i = 0; i < backgroundPosition.length; i++) {
             const num = randomNumber(spinTypesArray.length);
             const spinType = spinTypesArray[num];
             const newPosition = spinTypes[spinType].position;
-            newBackgroundPositions.push(`${newPosition.x}px ${newPosition.y}px`);
+
+            newSpinnedTypes.push(spinType);
+            newBackgroundPositions.push(`-${newPosition.x}px -${newPosition.y}px`);
         }
-        setBackgroundPosition(newBackgroundPositions)
+        setSpinnedTypes(newSpinnedTypes);
+        setBackgroundPosition(newBackgroundPositions);
+
+        console.log(newSpinnedTypes);
+        const winningTypes = [];
+        const winStatus = newSpinnedTypes.some((type) => {
+            console.log(winningTypes.some(wType => wType.type == type))
+            if (winningTypes.length === 0 || winningTypes.some((wType) => wType.type !== type)) {
+                const typeCount = newSpinnedTypes.filter((t) => t === type).length;
+                console.log(type, typeCount);
+                if (typeCount >= 3) {
+                    winningTypes.push({ type, count: typeCount });
+                }
+            }
+        });
+        console.log(winningTypes);
+        if (winStatus) {
+            win();
+        }
+    };
+
+    const win = () => {
+        console.log("win");
     };
 
     const add = () => {
@@ -53,7 +79,13 @@ export default function Tocky() {
             <h1>tocky</h1>
             <div className="spinGrid">
                 {backgroundPosition.map((position, index) => {
-                    return <div className="tocka" style={{ backgroundPosition: position }} key={index}></div>
+                    return (
+                        <div
+                            className="tocka"
+                            style={{ backgroundPosition: position }}
+                            key={index}
+                        ></div>
+                    );
                 })}
                 {/* <div className="tocka" style={{ backgroundPosition: backgroundPosition }}></div>
                 <div className="tocka" style={{ backgroundPosition: backgroundPosition }}></div>
