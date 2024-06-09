@@ -1,0 +1,28 @@
+.spinGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+}
+
+.tocka {
+    background-image: url("../../assets/spinTypes2.png");
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+}
+
+.spinValue {
+    display: flex;
+    justify-content: space-around;
+}
+
+.connection {
+    display: block;
+    background-color: white;
+    width: 200px;
+    height: 20px;
+    position: relative;
+    /* x: 213px; */
+    left: 300px;
+    top: 100px;
+}
