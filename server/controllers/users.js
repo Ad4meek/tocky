@@ -33,8 +33,8 @@ async function createUser(req, res){
         
         if (result) {
             return res.status(201).send({
-            msg: "User created",
-            payload: result,
+                msg: "User created",
+                payload: result,
             });
         }
         res.status(500).send({
@@ -107,8 +107,37 @@ async function loginUser(req, res){
     });
 }
 
+async function logoutUser(req, res){
+    res.clearCookie('session_token');
+
+    res.status(200).send();
+}
+
+async function getUserMoney(req, res){
+    const userId = req.params.id;
+
+    if(!userId) return res.status(500).send();
+
+    const user = await User.findOne({
+        unique_id: userId
+    }, {
+        _id: 0,
+        money: 1
+    });
+
+    if(!user || Object.hasOwnProperty(user, "money")) return res.status(500).send();
+
+    res.status(200).send({
+        data: {
+            money: user.money
+        }
+    });
+}
+
 
 export {
     createUser,
-    loginUser
+    loginUser,
+    logoutUser,
+    getUserMoney
 }

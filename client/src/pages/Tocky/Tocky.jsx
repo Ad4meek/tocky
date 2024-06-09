@@ -2,10 +2,14 @@ import "./Tocky.css";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import spinTypes from "../../assets/spinTypes.json";
 import { Button } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { logoutUser } from "../../models/User";
+import { useDispatch, useSelector } from "react-redux";
+import { reset } from "../../helpers/redux/userSlice";
+import { getMoney } from "../../helpers/money/money";
 
 export default function Tocky() {
     const [spinValue, setSpinValue] = useState(1);
@@ -175,6 +179,37 @@ export default function Tocky() {
         return Math.floor(Math.random() * max);
     };
 
+    // BAR
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const [money, setMoney] = useState(0);
+    
+    
+    async function logout(){
+        await logoutUser();
+    
+        dispatch(reset());
+
+        navigate('/');
+    }
+
+    // Get money
+    const userState = useSelector((state) => state.user);
+    
+    useEffect(() => {
+        async function asyncLoad(){
+            const userMoney = await getMoney({
+                userUniqueId: userState.user.uniqueId
+            });
+    
+            setMoney(userMoney);
+        }
+
+        asyncLoad();
+    }, [])
+
+
     return (
         <>
             <h1>tocky</h1>
@@ -204,7 +239,7 @@ export default function Tocky() {
 
 
             <div className="bar">
-                <Button variant="contained">
+                <Button variant="contained" onClick={logout}>
                     Logout
                 </Button>
 
@@ -217,7 +252,7 @@ export default function Tocky() {
                 <p>
                     Počet peněz:
 
-                    0
+                    { money }
                 </p>
             </div>
         </>

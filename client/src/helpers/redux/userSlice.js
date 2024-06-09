@@ -32,10 +32,11 @@ const userSlice = createSlice({
             }
         },
         reset: (state) => {
-            state = initialState;
+            state.status = initialState.status;
+            state.user = initialState.user;
         }
     },
 });
 
-export const { setIsFetching, setIsFetched } = userSlice.actions;
+export const { setIsFetching, setIsFetched, reset } = userSlice.actions;
 export default userSlice.reducer;
