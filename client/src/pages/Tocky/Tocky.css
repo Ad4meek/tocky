@@ -16,13 +16,13 @@
     justify-content: space-around;
 }
 
-.connection {
-    display: block;
-    background-color: white;
-    width: 200px;
-    height: 20px;
+.canvas {
+    /* background-color: white; */
+    width: 800px;
+    height: 800px;
     position: relative;
-    /* x: 213px; */
-    left: 300px;
-    top: 100px;
+    top: -800px;
+    left: 0;
+    margin-bottom: -782px;
+    /* z-index: -1; */
 }
