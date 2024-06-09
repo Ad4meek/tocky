@@ -1,0 +1,8 @@
+.age_control {
+    display: flex;
+    align-items: center;
+}
+
+.age_control p {
+    margin-right: 20px;
+}
