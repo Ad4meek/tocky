@@ -9,7 +9,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../models/User";
 import { useDispatch, useSelector } from "react-redux";
 import { reset } from "../../helpers/redux/userSlice";
-import { getMoney } from "../../helpers/money/money";
+import { getUserMoney } from "../../models/Money";
 
 export default function Tocky() {
     const [spinValue, setSpinValue] = useState(1);
@@ -199,11 +199,11 @@ export default function Tocky() {
     
     useEffect(() => {
         async function asyncLoad(){
-            const userMoney = await getMoney({
-                userUniqueId: userState.user.uniqueId
-            });
-    
-            setMoney(userMoney);
+            const userMoney = await getUserMoney(
+                userState.user.uniqueId
+            );
+
+            setMoney(userMoney.data.money);
         }
 
         asyncLoad();

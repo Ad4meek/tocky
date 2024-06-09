@@ -113,31 +113,9 @@ async function logoutUser(req, res){
     res.status(200).send();
 }
 
-async function getUserMoney(req, res){
-    const userId = req.params.id;
-
-    if(!userId) return res.status(500).send();
-
-    const user = await User.findOne({
-        unique_id: userId
-    }, {
-        _id: 0,
-        money: 1
-    });
-
-    if(!user || Object.hasOwnProperty(user, "money")) return res.status(500).send();
-
-    res.status(200).send({
-        data: {
-            money: user.money
-        }
-    });
-}
-
 
 export {
     createUser,
     loginUser,
     logoutUser,
-    getUserMoney
 }

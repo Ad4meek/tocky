@@ -50,20 +50,4 @@ async function logoutUser() {
     };
 }
 
-async function getUserMoney(userId) {
-    const req = await fetch(`http://localhost:3000/users/money/${userId}`, {
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-        },
-        method: "GET"
-    });
-    const data = await req.json();
-
-    return {
-        status: req.status,
-        data: data.data
-    };
-}
-
-export { createUser, loginUser, logoutUser, getUserMoney };
+export { createUser, loginUser, logoutUser };
