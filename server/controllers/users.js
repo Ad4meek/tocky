@@ -45,7 +45,7 @@ exports.createUser = async (req, res) => {
 };
 
 
-exports.checkUser = async (req, res) => {
+exports.loginUser = async (req, res) => {
     /**
      * 
      * email - string
@@ -62,22 +62,39 @@ exports.checkUser = async (req, res) => {
 
     try{
         // Get user
-        const user = await User.findOne({ email: userData.email });
+        const user = await User.findOne({
+            email: userData.email
+        }, {
+            _id: 0
+        });
     
-        if(!user) return res.status(401);
+        if(!user) return res.status(401).send();
 
         // Compare passwords
         const isPasswordCorrect = bcrypt.compareSync(userData.password, user.password);
 
-        if(!isPasswordCorrect) return res.status(401);
+        if(!isPasswordCorrect) return res.status(401).send();
 
         // Create session token and save it to cookies
-        // const jwtToken = 
+        const tokenData = {
+            name: user.name,
+            email: user.email,
+            uniqueId: user.unique_id
+        };
+        
+        const jwtToken = jwt.sign(tokenData, process.env.JWT_SECRET_KEY);
+
+        res.cookie('session_token', jwtToken, {
+            maxAge: 2700,
+            httpOnly: true,
+            path: "/",
+            sameSite: 'strict'
+        });
     }
     catch(err){
         res.status(500).send(error);
     }
     
 
-    res.status(200);
+    res.status(200).send();
 }
