@@ -24,11 +24,14 @@ async function loginUser(formData) {
             "Content-Type": "application/json",
         },
         method: "POST",
+        credentials: "include",
         body: JSON.stringify(formData),
     });
+    const data = await req.json();
 
     return {
         status: req.status,
+        data: data.data
     };
 }
 

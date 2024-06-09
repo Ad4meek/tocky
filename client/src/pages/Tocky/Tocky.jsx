@@ -4,6 +4,8 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useState } from "react";
 import spinTypes from "../../assets/spinTypes.json";
+import { Button } from "@mui/material";
+import { Link } from "react-router-dom";
 
 export default function Tocky() {
     const [spinValue, setSpinValue] = useState(1);
@@ -199,6 +201,25 @@ export default function Tocky() {
             <button onClick={repeat}>
                 <AutorenewIcon></AutorenewIcon>
             </button>
+
+
+            <div className="bar">
+                <Button variant="contained">
+                    Logout
+                </Button>
+
+                <Link to={"/deposit"}>
+                    <Button>
+                        Dej peníz
+                    </Button>
+                </Link>
+
+                <p>
+                    Počet peněz:
+
+                    0
+                </p>
+            </div>
         </>
     );
 }
