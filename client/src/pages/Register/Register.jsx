@@ -14,9 +14,17 @@ export default function Register() {
   const navigate = useNavigate();
 
   const postForm = async () => {
+    if(!formData || !formData.age || formData.age === "off"){
+      return setInfo("Musí ti být 18")
+    }
+    else if(!formData || !formData.name || !formData.email || !formData.password){
+      return setInfo("Vypln všechny informace");
+    }
+    
     const user = await createUser(formData);
+
     if (user.status === 201) {
-      redirectToSuccessPage(user.payload._id);
+      redirectToSuccessPage();
     } else {
       setInfo(user.msg);
     }
@@ -31,9 +39,11 @@ export default function Register() {
     postForm();
   };
 
-  const redirectToSuccessPage = (id) => {
-    return navigate(`/createduser/${id}`);
+  const redirectToSuccessPage = () => {
+    return navigate(`/tocky`);
   };
+
+  
   return (
     <>
       <div className="container">
@@ -73,6 +83,7 @@ export default function Register() {
           <FormControlLabel
             required
             control={<Checkbox />}
+            name="age"
             onChange={(e) => handleChange(e)}
           />
         </div>
@@ -86,6 +97,12 @@ export default function Register() {
         <Link to={"/"}>
           <Button variant="contained">Login</Button>
         </Link>
+
+
+        { info ? 
+          <h1>{info}</h1> :
+          <></>
+        }
       </div>
     </>
   );

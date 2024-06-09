@@ -1,77 +1,39 @@
-export const getUsers = async () => {
-  const req = await fetch("http://localhost:3000/users", {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    method: "GET",
-  });
-  const data = await req.json();
-  return {
-    status: req.status,
-    payload: data.payload,
-    msg: data.msg,
-  };
-};
-export const getUser = async (id) => {
-  const req = await fetch(`http://localhost:3000/users/${id}`, {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    method: "GET",
-  });
-  const data = await req.json();
-  return {
-    status: req.status,
-    payload: data.payload,
-    msg: data.msg,
-  };
-};
-export const createUser = async (formData) => {
-  const req = await fetch(`http://localhost:3000/users`, {
+async function createUser(formData){
+  const req = await fetch("http://localhost:3000/users/register", {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
     method: "POST",
-    body: JSON.stringify(formData),
+    body: JSON.stringify(formData)
   });
+
   const data = await req.json();
+
   return {
     status: req.status,
     payload: data.payload,
     msg: data.msg,
   };
-};
-export const updateUser = async (id, formData) => {
-  const req = await fetch(`http://localhost:3000/users/${id}`, {
+}
+
+async function loginUser(formData){
+  const req = await fetch("http://localhost:3000/users/login", {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    method: "PUT",
-    body: JSON.stringify(formData),
+    method: "POST",
+    body: JSON.stringify(formData)
   });
-  const data = await req.json();
+
   return {
     status: req.status,
-    payload: data.payload,
-    msg: data.msg,
   };
-};
-export const deleteUser = async (id) => {
-  const req = await fetch(`http://localhost:3000/users/${id}`, {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    method: "DELETE",
-  });
-  const data = await req.json();
-  return {
-    status: req.status,
-    payload: data.payload,
-    msg: data.msg,
-  };
-};
+}
+
+
+export {
+  createUser,
+  loginUser
+}
