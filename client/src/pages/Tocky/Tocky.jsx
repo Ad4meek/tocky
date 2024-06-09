@@ -9,7 +9,9 @@ export default function Tocky() {
     const [spinValue, setSpinValue] = useState(1);
     const [spinValueIndex, setSpinValueIndex] = useState(0);
     const spinValuesConstant = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
-    const [backgroundPosition, setBackgroundPosition] = useState(Array(16).fill("0px 0px"));
+    const [backgroundPosition, setBackgroundPosition] = useState(
+        Array(16).fill("0px 0px")
+    );
     const [spinnedTypes, setSpinnedTypes] = useState([]);
 
     const spinTypesConstant = Object.keys(spinTypes);
@@ -39,7 +41,9 @@ export default function Tocky() {
             if (i % 4 === 0) newSpinnedTypes.push([]);
             newSpinnedTypes[newSpinnedTypes.length - 1].push(spinType);
 
-            newBackgroundPositions.push(`-${newPosition.x}px -${newPosition.y}px`);
+            newBackgroundPositions.push(
+                `-${newPosition.x}px -${newPosition.y}px`
+            );
         }
         setSpinnedTypes(newSpinnedTypes);
         setBackgroundPosition(newBackgroundPositions);
@@ -60,10 +64,16 @@ export default function Tocky() {
         // check horizontal
         spinnedTypes.forEach((spinnedTypesRow, rowIndex) => {
             spinTypesConstant.forEach((spinType) => {
-                const count = spinnedTypesRow.filter((type) => type === spinType).length;
+                const count = spinnedTypesRow.filter(
+                    (type) => type === spinType
+                ).length;
                 // console.log(count, spinType);
                 if (count >= 3) {
-                    const indexes = getIndexes(spinnedTypesRow, rowIndex, spinType);
+                    const indexes = getIndexes(
+                        spinnedTypesRow,
+                        rowIndex,
+                        spinType
+                    );
 
                     // are consecutive
                     if (isConsecutive(indexes)) {
