@@ -1,11 +1,12 @@
-const { BONUS_MONEY } = require("../CONST");
-const User = require("../models/users");
-const bcrypt = require('bcrypt');
-const uuidv4 = require('uuid').v4;
-const jwt = require('jsonwebtoken');
+import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from "uuid";
+import jwt from "jsonwebtoken";
+
+import { User } from "../models/users.js";
+import { BONUS_MONEY } from "../helpers/const.js";
 
 
-exports.createUser = async (req, res) => {
+async function createUser(req, res){
     /**
      * 
      * name - string
@@ -13,7 +14,8 @@ exports.createUser = async (req, res) => {
      * password - string
      * 
      */
-    
+
+
     try {
         const hashedPassword = bcrypt.hashSync(req.body.password, 10);
         
@@ -42,10 +44,10 @@ exports.createUser = async (req, res) => {
     } catch (error) {
         res.status(500).send(error);
     }
-};
+}
 
 
-exports.loginUser = async (req, res) => {
+async function loginUser(req, res){
     /**
      * 
      * email - string
@@ -97,4 +99,10 @@ exports.loginUser = async (req, res) => {
     
 
     res.status(200).send();
+}
+
+
+export {
+    createUser,
+    loginUser
 }
