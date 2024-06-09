@@ -24,7 +24,25 @@ async function loginUser(formData) {
             "Content-Type": "application/json",
         },
         method: "POST",
+        credentials: "include",
         body: JSON.stringify(formData),
+    });
+    const data = await req.json();
+
+    return {
+        status: req.status,
+        data: data.data
+    };
+}
+
+async function logoutUser() {
+    const req = await fetch("http://localhost:3000/users/logout", {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        method: "GET",
+        credentials: "include",
     });
 
     return {
@@ -32,4 +50,4 @@ async function loginUser(formData) {
     };
 }
 
-export { createUser, loginUser };
+export { createUser, loginUser, logoutUser };

@@ -2,8 +2,14 @@ import "./Tocky.css";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import spinTypes from "../../assets/spinTypes.json";
+import { Button } from "@mui/material";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { logoutUser } from "../../models/User";
+import { useDispatch, useSelector } from "react-redux";
+import { reset } from "../../helpers/redux/userSlice";
+import { addAmountMoney, getUserMoney, removeAmountMoney } from "../../models/Money";
 
 export default function Tocky() {
     const [spinValue, setSpinValue] = useState(1);
@@ -173,6 +179,54 @@ export default function Tocky() {
         return Math.floor(Math.random() * max);
     };
 
+    // BAR
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const [money, setMoney] = useState(0);
+    
+    
+    async function logout(){
+        await logoutUser();
+    
+        dispatch(reset());
+
+        navigate('/');
+    }
+
+    // Get money
+    const [updateMoney, setUpdateMoney] = useState(false);
+    
+    const userState = useSelector((state) => state.user);
+    
+    useEffect(() => {
+        async function asyncLoad(){
+            const userMoney = await getUserMoney(
+                userState.user.uniqueId
+            );
+
+            setMoney(userMoney.data.money);
+        }
+
+        asyncLoad();
+
+        if(updateMoney) setUpdateMoney(false);
+    }, [updateMoney])
+
+    // Add and remove money
+    async function removeMoney(amount){
+        await removeAmountMoney(amount, userState.user.uniqueId);
+
+        setUpdateMoney(true);
+    }
+
+    async function addMoney(amount){
+        await addAmountMoney(amount, userState.user.uniqueId);
+
+        setUpdateMoney(true);
+    }
+
+
     return (
         <>
             <h1>tocky</h1>
@@ -199,6 +253,42 @@ export default function Tocky() {
             <button onClick={repeat}>
                 <AutorenewIcon></AutorenewIcon>
             </button>
+
+
+            <div className="bar">
+                <Button variant="contained" onClick={logout}>
+                    Logout
+                </Button>
+
+                <Link to={"/deposit"}>
+                    <Button>
+                        Dej peníz
+                    </Button>
+                </Link>
+
+                <p>
+                    Počet peněz:
+
+                    { money }
+                </p>
+            </div>
+
+
+            <div>
+                <br />
+                <br />
+                <br />
+                <br />
+                <h3>Testing</h3>
+
+                <Button onClick={() => removeMoney(50)}>
+                    -50kč
+                </Button>
+
+                <Button onClick={() => addMoney(50)}>
+                    +50kč
+                </Button>
+            </div>
         </>
     );
 }

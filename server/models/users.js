@@ -6,7 +6,9 @@ const userSchema = Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     money: { type: Number, required: true },
-    unique_id: { type: String, required: true }
+    unique_id: { type: String, required: true },
+
+    payment_id: { type: String, required: false }
 });
 
 

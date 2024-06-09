@@ -33,8 +33,8 @@ async function createUser(req, res){
         
         if (result) {
             return res.status(201).send({
-            msg: "User created",
-            payload: result,
+                msg: "User created",
+                payload: result,
             });
         }
         res.status(500).send({
@@ -61,6 +61,8 @@ async function loginUser(req, res){
         password: req.body.password
     };
 
+    let tokenData = {};
+
 
     try{
         // Get user
@@ -78,7 +80,7 @@ async function loginUser(req, res){
         if(!isPasswordCorrect) return res.status(401).send();
 
         // Create session token and save it to cookies
-        const tokenData = {
+        tokenData = {
             name: user.name,
             email: user.email,
             uniqueId: user.unique_id
@@ -94,9 +96,19 @@ async function loginUser(req, res){
         });
     }
     catch(err){
-        res.status(500).send(error);
+        res.status(500).send(err);
     }
     
+
+    res.status(200).send({
+        data: {
+            ...tokenData
+        }
+    });
+}
+
+async function logoutUser(req, res){
+    res.clearCookie('session_token');
 
     res.status(200).send();
 }
@@ -104,5 +116,6 @@ async function loginUser(req, res){
 
 export {
     createUser,
-    loginUser
+    loginUser,
+    logoutUser,
 }
