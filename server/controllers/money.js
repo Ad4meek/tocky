@@ -106,9 +106,59 @@ async function getDepositAmount(req, res){
     }
 }
 
+async function removeAmountMoney(req, res){
+    const amount = parseInt(req.body.amount) ?? null;
+    const userUniqueId = req.body.uniqueId;
+
+    if(!amount || !userUniqueId) return res.status(500).send();
+
+    try{
+        const result = await User.updateOne({
+            unique_id: userUniqueId
+        }, {
+            $inc: {
+                money: -amount
+            }
+        });
+
+        if(!result || result.modifiedCount !== 1) return res.status(500).send();
+        
+        res.status(200).send();
+    }
+    catch(err){
+        res.status(500).send();
+    }
+}
+
+async function addAmountMoney(req, res){
+    const amount = parseInt(req.body.amount) ?? null;
+    const userUniqueId = req.body.uniqueId;
+
+    if(!amount || !userUniqueId) return res.status(500).send();
+
+    try{
+        const result = await User.updateOne({
+            unique_id: userUniqueId
+        }, {
+            $inc: {
+                money: amount
+            }
+        });
+
+        if(!result || result.modifiedCount !== 1) return res.status(500).send();
+        
+        res.status(200).send();
+    }
+    catch(err){
+        res.status(500).send();
+    }
+}
+
 
 export {
     getUserMoney,
     depositUserMoney,
-    getDepositAmount
+    getDepositAmount,
+    removeAmountMoney,
+    addAmountMoney
 }

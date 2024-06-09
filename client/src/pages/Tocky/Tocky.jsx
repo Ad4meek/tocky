@@ -9,7 +9,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../models/User";
 import { useDispatch, useSelector } from "react-redux";
 import { reset } from "../../helpers/redux/userSlice";
-import { getUserMoney } from "../../models/Money";
+import { addAmountMoney, getUserMoney, removeAmountMoney } from "../../models/Money";
 
 export default function Tocky() {
     const [spinValue, setSpinValue] = useState(1);
@@ -195,6 +195,8 @@ export default function Tocky() {
     }
 
     // Get money
+    const [updateMoney, setUpdateMoney] = useState(false);
+    
     const userState = useSelector((state) => state.user);
     
     useEffect(() => {
@@ -207,7 +209,22 @@ export default function Tocky() {
         }
 
         asyncLoad();
-    }, [])
+
+        if(updateMoney) setUpdateMoney(false);
+    }, [updateMoney])
+
+    // Add and remove money
+    async function removeMoney(amount){
+        await removeAmountMoney(amount, userState.user.uniqueId);
+
+        setUpdateMoney(true);
+    }
+
+    async function addMoney(amount){
+        await addAmountMoney(amount, userState.user.uniqueId);
+
+        setUpdateMoney(true);
+    }
 
 
     return (
@@ -254,6 +271,23 @@ export default function Tocky() {
 
                     { money }
                 </p>
+            </div>
+
+
+            <div>
+                <br />
+                <br />
+                <br />
+                <br />
+                <h3>Testing</h3>
+
+                <Button onClick={() => removeMoney(50)}>
+                    -50kč
+                </Button>
+
+                <Button onClick={() => addMoney(50)}>
+                    +50kč
+                </Button>
             </div>
         </>
     );

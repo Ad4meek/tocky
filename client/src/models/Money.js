@@ -44,9 +44,47 @@ async function getDepositAmount(depositId) {
     }
 }
 
+async function removeAmountMoney(amount, userId) {
+    const req = await fetch(`http://localhost:3000/money/remove`, {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+            amount,
+            uniqueId: userId
+        })
+    });
+
+    return {
+        status: req.status,
+    }
+}
+
+async function addAmountMoney(amount, userId) {
+    const req = await fetch(`http://localhost:3000/money/add`, {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+            amount,
+            uniqueId: userId
+        })
+    });
+
+    return {
+        status: req.status,
+    }
+}
+
 
 export {
     getUserMoney,
     depositUserMoney,
-    getDepositAmount
+    getDepositAmount,
+    removeAmountMoney,
+    addAmountMoney
 }
