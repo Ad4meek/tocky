@@ -226,7 +226,6 @@ export default function Tocky() {
         setUpdateMoney(true);
     }
 
-
     return (
         <>
             <h1 className="name">Točky</h1>
@@ -257,8 +256,6 @@ export default function Tocky() {
                 </button>
             </div>
 
-
-
             <div className="bar">
                 <p>
                     Zůstatek: {money}
@@ -273,18 +270,11 @@ export default function Tocky() {
                 </Button>
             </div>
 
-
             <div>
-                <br />
-                <br />
-                <br />
-                <br />
                 <h3>Testing</h3>
-
                 <Button onClick={() => removeMoney(50)}>
                     -50kč
                 </Button>
-
                 <Button onClick={() => addMoney(50)}>
                     +50kč
                 </Button>
