@@ -16,19 +16,15 @@ export default function Tocky() {
     const [spinValueIndex, setSpinValueIndex] = useState(0);
     const spinValuesConstant = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
     const [backgroundPosition, setBackgroundPosition] = useState(Array(16).fill("0px 0px"));
-    const [winValue, setWinValue] = useState(null);
+    const [winValue, setWinValue] = useState(0);
 
     const spinTypesConstant = Object.keys(spinTypes);
 
     const acrossIndexes = [
         [0, 5, 10],
-        [1, 6, 11],
         [2, 5, 8],
-        [3, 6, 9],
         [4, 9, 14],
-        [5, 10, 15],
         [6, 9, 12],
-        [7, 10, 13],
     ];
 
     const draw = (ctx, posX, posY, finalX, finalY, width, direction) => {
@@ -46,6 +42,7 @@ export default function Tocky() {
         ctx.lineTo(posX, posY);
         ctx.fill();
     };
+    
     const clearCanvas = (ctx) => {
         ctx.clearRect(0, 0, 800, 800);
     };
@@ -65,7 +62,7 @@ export default function Tocky() {
     const repeat = () => {
         console.log("točka", spinValue);
         clearCanvas(ctx);
-        setWinValue(null);
+        setWinValue(0);
 
         let newBackgroundPositions = [];
         let newSpinnedTypes = [];
@@ -220,9 +217,9 @@ export default function Tocky() {
             console.log(item);
 
             if (item.direction === "horizontal" && item.items.length === 4) {
-                newWinValue += 2 * spinTypes[item.items[0].type].win;
+                newWinValue += 2 * spinTypes[item.items[0].type].win * spinValue;
             } else {
-                newWinValue += spinTypes[item.items[0].type].win;
+                newWinValue += spinTypes[item.items[0].type].win * spinValue;
             }
         });
         setWinValue(newWinValue);
@@ -324,7 +321,7 @@ export default function Tocky() {
                 <button onClick={add}>
                     <AddIcon></AddIcon>
                 </button>
-                <p>{winValue}</p>
+                <p>Výhra: {winValue}</p>
             </div>
             <button onClick={repeat}>
                 <AutorenewIcon></AutorenewIcon>
