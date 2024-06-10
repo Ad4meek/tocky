@@ -17,6 +17,7 @@ export default function Tocky() {
     const spinValuesConstant = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
     const [backgroundPosition, setBackgroundPosition] = useState(Array(16).fill("0px 0px"));
     const [winValue, setWinValue] = useState(0);
+    const [canSpin, setCanSpin] = useState(true);
 
     const spinTypesConstant = Object.keys(spinTypes);
 
@@ -42,7 +43,36 @@ export default function Tocky() {
         ctx.lineTo(posX, posY);
         ctx.fill();
     };
-    
+
+    const animation = (positions) => {
+        console.log("positions", positions);
+        let newPositions = updatePosition(positions, 1400);
+        console.log("newPositions", newPositions);
+        setBackgroundPosition(newPositions);
+
+        const animationInterval = setInterval(() => {
+            console.log(positions[0], newPositions[0]);
+            if (positions[0] === newPositions[0]) {
+                clearInterval(animationInterval);
+                return;
+            }
+            newPositions = updatePosition(newPositions, -200);
+            setBackgroundPosition(newPositions);
+        }, 100);
+    };
+
+    const updatePosition = (positions, adding) => {
+        let newPositions = [];
+        positions.forEach((position, index) => {
+            let x = position.split(" ")[0];
+            let y = position.split(" ")[1];
+            y = parseInt(y, 10);
+            y += adding;
+            newPositions.push(`${x} ${y}px`);
+        });
+        return newPositions;
+    };
+
     const clearCanvas = (ctx) => {
         ctx.clearRect(0, 0, 800, 800);
     };
@@ -55,12 +85,12 @@ export default function Tocky() {
         canvas.width = 800;
         canvas.height = 800;
         setCtx(canvas.getContext("2d"));
-
-        // draw(ctx, 250, 650, 450, 650, 10);
     }, []);
 
     const repeat = () => {
         console.log("točka", spinValue);
+        if (!canSpin) return;
+        setCanSpin(false);
         clearCanvas(ctx);
         setWinValue(0);
 
@@ -74,16 +104,13 @@ export default function Tocky() {
             if (i % 4 === 0) newSpinnedTypes.push([]);
             newSpinnedTypes[newSpinnedTypes.length - 1].push(spinType);
 
-            newBackgroundPositions.push(`-${newPosition.x}px -${newPosition.y}px`);
+            newBackgroundPositions.push(`${newPosition.x}px ${newPosition.y}px`);
         }
         setBackgroundPosition(newBackgroundPositions);
 
         console.log(newSpinnedTypes);
+        animation(newBackgroundPositions);
         checkWin(newSpinnedTypes);
-
-        // if (winStatus) {
-        //     win();
-        // }
     };
 
     const checkWin = (spinnedTypes) => {
@@ -95,12 +122,11 @@ export default function Tocky() {
         spinnedTypes.forEach((spinnedTypesRow, rowIndex) => {
             spinTypesConstant.forEach((spinType) => {
                 const count = spinnedTypesRow.filter((type) => type === spinType).length;
-                // console.log(count, spinType);
                 if (count >= 3) {
                     const indexes = getIndexes(spinnedTypesRow, rowIndex, spinType);
 
                     // are consecutive
-                    if (isConsecutive(indexes)) {
+                    if (isConsecutive(indexes) && indexes[0] % 4 === 0) {
                         let itemsArray = {
                             direction: "horizontal",
                             items: [],
@@ -131,8 +157,6 @@ export default function Tocky() {
             });
 
             if (types.every((type, _, arr) => type === arr[0])) {
-                console.log("win across");
-
                 let itemsArray = {
                     direction: "across",
                     items: [],
@@ -154,6 +178,14 @@ export default function Tocky() {
         if (winningItems.length > 0) {
             win(winningItems);
         }
+        else {
+            removeMoney(spinValue);
+        }
+
+        setTimeout(() => {
+            console.log("winValue", winValue);
+            setCanSpin(true);
+        }, 1000 * winningItems.length);
     };
 
     const getIndexes = (row, rowIndex, type) => {
@@ -184,7 +216,7 @@ export default function Tocky() {
 
         let newWinValue = 0;
 
-        winningItems.forEach((item) => {
+        winningItems.forEach((item, index) => {
             let items = item.items;
             for (let i = 1; i < items.length; i++) {
                 const item1 = items[i - 1];
@@ -202,8 +234,6 @@ export default function Tocky() {
 
                 const position1 = getPosition(item1.index, offset[item.direction]);
                 const position2 = getPosition(item2.index, offset[item.direction]);
-                console.log("position1", position1);
-                console.log("position2", position2);
 
                 let direction = "across";
                 let width = 20;
@@ -212,7 +242,9 @@ export default function Tocky() {
                     width = 12;
                 }
 
-                draw(ctx, position1.x, position1.y, position2.x, position2.y, width, direction);
+                setTimeout(() => {
+                    draw(ctx, position1.x, position1.y, position2.x, position2.y, width, direction);
+                }, 1000 * (index + 1));
             }
             console.log(item);
 
@@ -222,7 +254,10 @@ export default function Tocky() {
                 newWinValue += spinTypes[item.items[0].type].win * spinValue;
             }
         });
-        setWinValue(newWinValue);
+        setTimeout(() => {
+            setWinValue(newWinValue);
+            addMoney(newWinValue - spinValue);
+        }, 1000 * winningItems.length + 1);
     };
 
     const getPosition = (index, offset) => {
@@ -271,19 +306,19 @@ export default function Tocky() {
 
     const userState = useSelector((state) => state.user);
 
-    // useEffect(() => {
-    //     async function asyncLoad(){
-    //         const userMoney = await getUserMoney(
-    //             userState.user.uniqueId
-    //         );
+    useEffect(() => {
+        async function asyncLoad(){
+            const userMoney = await getUserMoney(
+                userState.user.uniqueId
+            );
 
-    //         setMoney(userMoney.data.money);
-    //     }
+            setMoney(userMoney.data.money);
+        }
 
-    //     asyncLoad();
+        asyncLoad();
 
-    //     if(updateMoney) setUpdateMoney(false);
-    // }, [updateMoney])
+        if(updateMoney) setUpdateMoney(false);
+    }, [updateMoney])
 
     // Add and remove money
     async function removeMoney(amount) {
