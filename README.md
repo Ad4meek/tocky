@@ -1,5 +1,7 @@
 # TOČKY
 
+video - https://calipio.com/app/play/frLH7EDk#bhPNzm6v
+
 ## Client
 - cd client
 - npm i
