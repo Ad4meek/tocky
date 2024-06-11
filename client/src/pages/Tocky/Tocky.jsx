@@ -304,10 +304,11 @@ export default function Tocky() {
     // Get money
     const [updateMoney, setUpdateMoney] = useState(false);
 
+
     const userState = useSelector((state) => state.user);
 
     useEffect(() => {
-        async function asyncLoad(){
+        async function asyncLoad() {
             const userMoney = await getUserMoney(
                 userState.user.uniqueId
             );
@@ -317,7 +318,7 @@ export default function Tocky() {
 
         asyncLoad();
 
-        if(updateMoney) setUpdateMoney(false);
+        if (updateMoney) setUpdateMoney(false);
     }, [updateMoney])
 
     // Add and remove money
@@ -335,7 +336,7 @@ export default function Tocky() {
 
     return (
         <>
-            <h1>tocky</h1>
+            <h1 className="name">Točky</h1>
             <div className="spinGrid">
                 {backgroundPosition.map((position, index) => {
                     return (
@@ -363,30 +364,27 @@ export default function Tocky() {
             </button>
 
             <div className="bar">
+                <p>
+                    Zůstatek: {money}
+                </p>
+                <Link to={"/deposit"}>
+                    <Button>
+                        Vklad
+                    </Button>
+                </Link>
                 <Button variant="contained" onClick={logout}>
                     Logout
                 </Button>
-
-                <Link to={"/deposit"}>
-                    <Button>Dej peníz</Button>
-                </Link>
-
-                <p>
-                    Počet peněz:
-                    {money}
-                </p>
             </div>
 
             <div>
-                <br />
-                <br />
-                <br />
-                <br />
                 <h3>Testing</h3>
-
-                <Button onClick={() => removeMoney(50)}>-50kč</Button>
-
-                <Button onClick={() => addMoney(50)}>+50kč</Button>
+                <Button onClick={() => removeMoney(50)}>
+                    -50kč
+                </Button>
+                <Button onClick={() => addMoney(50)}>
+                    +50kč
+                </Button>
             </div>
         </>
     );
