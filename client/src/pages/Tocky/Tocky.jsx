@@ -2,7 +2,7 @@ import "./Tocky.css";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import spinTypes from "../../assets/spinTypes.json";
 import { Button } from "@mui/material";
 import { Link, Navigate, useNavigate } from "react-router-dom";
@@ -15,27 +15,84 @@ export default function Tocky() {
     const [spinValue, setSpinValue] = useState(1);
     const [spinValueIndex, setSpinValueIndex] = useState(0);
     const spinValuesConstant = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
-    const [backgroundPosition, setBackgroundPosition] = useState(
-        Array(16).fill("0px 0px")
-    );
-    const [spinnedTypes, setSpinnedTypes] = useState([]);
+    const [backgroundPosition, setBackgroundPosition] = useState(Array(16).fill("0px 0px"));
+    const [winValue, setWinValue] = useState(0);
+    const [canSpin, setCanSpin] = useState(true);
 
     const spinTypesConstant = Object.keys(spinTypes);
 
     const acrossIndexes = [
         [0, 5, 10],
-        [1, 6, 11],
         [2, 5, 8],
-        [3, 6, 9],
         [4, 9, 14],
-        [5, 10, 15],
         [6, 9, 12],
-        [7, 10, 13],
     ];
-    // console.log(backgroundPosition);
+
+    const draw = (ctx, posX, posY, finalX, finalY, width, direction) => {
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.moveTo(posX, posY);
+        ctx.lineTo(finalX, finalY);
+        if (direction === "horizontal") {
+            ctx.lineTo(finalX, finalY + width);
+            ctx.lineTo(posX, posY + width);
+        } else {
+            ctx.lineTo(finalX + width, finalY);
+            ctx.lineTo(posX + width, posY);
+        }
+        ctx.lineTo(posX, posY);
+        ctx.fill();
+    };
+
+    const animation = (positions) => {
+        console.log("positions", positions);
+        let newPositions = updatePosition(positions, 1400);
+        console.log("newPositions", newPositions);
+        setBackgroundPosition(newPositions);
+
+        const animationInterval = setInterval(() => {
+            console.log(positions[0], newPositions[0]);
+            if (positions[0] === newPositions[0]) {
+                clearInterval(animationInterval);
+                return;
+            }
+            newPositions = updatePosition(newPositions, -200);
+            setBackgroundPosition(newPositions);
+        }, 100);
+    };
+
+    const updatePosition = (positions, adding) => {
+        let newPositions = [];
+        positions.forEach((position, index) => {
+            let x = position.split(" ")[0];
+            let y = position.split(" ")[1];
+            y = parseInt(y, 10);
+            y += adding;
+            newPositions.push(`${x} ${y}px`);
+        });
+        return newPositions;
+    };
+
+    const clearCanvas = (ctx) => {
+        ctx.clearRect(0, 0, 800, 800);
+    };
+
+    const canvasRef = useRef(null);
+    const [ctx, setCtx] = useState(null);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        canvas.width = 800;
+        canvas.height = 800;
+        setCtx(canvas.getContext("2d"));
+    }, []);
 
     const repeat = () => {
         console.log("točka", spinValue);
+        if (!canSpin) return;
+        setCanSpin(false);
+        clearCanvas(ctx);
+        setWinValue(0);
 
         let newBackgroundPositions = [];
         let newSpinnedTypes = [];
@@ -47,19 +104,13 @@ export default function Tocky() {
             if (i % 4 === 0) newSpinnedTypes.push([]);
             newSpinnedTypes[newSpinnedTypes.length - 1].push(spinType);
 
-            newBackgroundPositions.push(
-                `-${newPosition.x}px -${newPosition.y}px`
-            );
+            newBackgroundPositions.push(`${newPosition.x}px ${newPosition.y}px`);
         }
-        setSpinnedTypes(newSpinnedTypes);
         setBackgroundPosition(newBackgroundPositions);
 
         console.log(newSpinnedTypes);
+        animation(newBackgroundPositions);
         checkWin(newSpinnedTypes);
-
-        // if (winStatus) {
-        //     win();
-        // }
     };
 
     const checkWin = (spinnedTypes) => {
@@ -70,26 +121,22 @@ export default function Tocky() {
         // check horizontal
         spinnedTypes.forEach((spinnedTypesRow, rowIndex) => {
             spinTypesConstant.forEach((spinType) => {
-                const count = spinnedTypesRow.filter(
-                    (type) => type === spinType
-                ).length;
-                // console.log(count, spinType);
+                const count = spinnedTypesRow.filter((type) => type === spinType).length;
                 if (count >= 3) {
-                    const indexes = getIndexes(
-                        spinnedTypesRow,
-                        rowIndex,
-                        spinType
-                    );
+                    const indexes = getIndexes(spinnedTypesRow, rowIndex, spinType);
 
                     // are consecutive
-                    if (isConsecutive(indexes)) {
-                        let itemsArray = [];
+                    if (isConsecutive(indexes) && indexes[0] % 4 === 0) {
+                        let itemsArray = {
+                            direction: "horizontal",
+                            items: [],
+                        };
                         indexes.forEach((index) => {
                             const item = {
                                 index,
                                 type: spinType,
                             };
-                            itemsArray.push(item);
+                            itemsArray.items.push(item);
                         });
 
                         winningItems.push(itemsArray);
@@ -110,15 +157,16 @@ export default function Tocky() {
             });
 
             if (types.every((type, _, arr) => type === arr[0])) {
-                console.log("win across");
-
-                let itemsArray = [];
+                let itemsArray = {
+                    direction: "across",
+                    items: [],
+                };
                 acrossIndex.forEach((index) => {
                     const item = {
                         index,
                         type: types[0],
                     };
-                    itemsArray.push(item);
+                    itemsArray.items.push(item);
                 });
 
                 winningItems.push(itemsArray);
@@ -130,6 +178,14 @@ export default function Tocky() {
         if (winningItems.length > 0) {
             win(winningItems);
         }
+        else {
+            removeMoney(spinValue);
+        }
+
+        setTimeout(() => {
+            console.log("winValue", winValue);
+            setCanSpin(true);
+        }, 1000 * winningItems.length);
     };
 
     const getIndexes = (row, rowIndex, type) => {
@@ -157,6 +213,58 @@ export default function Tocky() {
 
     const win = (winningItems) => {
         console.log("win");
+
+        let newWinValue = 0;
+
+        winningItems.forEach((item, index) => {
+            let items = item.items;
+            for (let i = 1; i < items.length; i++) {
+                const item1 = items[i - 1];
+                const item2 = items[i];
+                const offset = {
+                    horizontal: {
+                        x: 100,
+                        y: 110,
+                    },
+                    across: {
+                        x: 75,
+                        y: 100,
+                    },
+                };
+
+                const position1 = getPosition(item1.index, offset[item.direction]);
+                const position2 = getPosition(item2.index, offset[item.direction]);
+
+                let direction = "across";
+                let width = 20;
+                if (position1.y === position2.y) {
+                    direction = "horizontal";
+                    width = 12;
+                }
+
+                setTimeout(() => {
+                    draw(ctx, position1.x, position1.y, position2.x, position2.y, width, direction);
+                }, 1000 * (index + 1));
+            }
+            console.log(item);
+
+            if (item.direction === "horizontal" && item.items.length === 4) {
+                newWinValue += 2 * spinTypes[item.items[0].type].win * spinValue;
+            } else {
+                newWinValue += spinTypes[item.items[0].type].win * spinValue;
+            }
+        });
+        setTimeout(() => {
+            setWinValue(newWinValue);
+            addMoney(newWinValue - spinValue);
+        }, 1000 * winningItems.length + 1);
+    };
+
+    const getPosition = (index, offset) => {
+        return {
+            x: (index % 4) * 200 + offset.x,
+            y: Math.floor(index / 4) * 200 + offset.y,
+        };
     };
 
     const add = () => {
@@ -185,17 +293,17 @@ export default function Tocky() {
 
     const [money, setMoney] = useState(0);
 
-
     async function logout() {
         await logoutUser();
 
         dispatch(reset());
 
-        navigate('/');
+        navigate("/");
     }
 
     // Get money
     const [updateMoney, setUpdateMoney] = useState(false);
+
 
     const userState = useSelector((state) => state.user);
 
@@ -240,21 +348,20 @@ export default function Tocky() {
                     );
                 })}
             </div>
-            <div className="spinOptions">
-                <div className="spinValue">
-                    <button onClick={remove}>
-                        <RemoveIcon></RemoveIcon>
-                    </button>
-                    <p>{spinValue}</p>
-                    <button onClick={add}>
-                        <AddIcon></AddIcon>
-                    </button>
-                </div>
-                <p>Výhra: 50</p>
-                <button onClick={repeat}>
-                    <AutorenewIcon></AutorenewIcon>
+            <canvas className="canvas" ref={canvasRef}></canvas>
+            <div className="spinValue">
+                <button onClick={remove}>
+                    <RemoveIcon></RemoveIcon>
                 </button>
+                <p>{spinValue}</p>
+                <button onClick={add}>
+                    <AddIcon></AddIcon>
+                </button>
+                <p>Výhra: {winValue}</p>
             </div>
+            <button onClick={repeat}>
+                <AutorenewIcon></AutorenewIcon>
+            </button>
 
             <div className="bar">
                 <p>

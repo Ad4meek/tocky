@@ -4,83 +4,83 @@
             "x": 0,
             "y": 0
         },
-        "win": 6
+        "win": 2
     },
     "bell": {
         "position": {
-            "x": -200,
+            "x": 200,
             "y": 0
         },
-        "win": 12
+        "win": 2
     },
     "wine": {
         "position": {
-            "x": -400,
+            "x": 400,
             "y": 0
         },
-        "win": 18
+        "win": 2
     },
     "banana": {
         "position": {
             "x": 0,
-            "y": -200
+            "y": 200
         },
-        "win": 8
+        "win": 2
     },
     "seven": {
         "position": {
-            "x": -200,
-            "y": -200
+            "x": 200,
+            "y": 200
         },
-        "win": 50
+        "win": 2
     },
     "dollar": {
         "position": {
-            "x": -400,
-            "y": -200
+            "x": 400,
+            "y": 200
         },
-        "win": 30
+        "win": 2
     },
     "horseshoe": {
         "position": {
             "x": 0,
-            "y": -400
+            "y": 400
         },
-        "win": 20
+        "win": 2
     },
     "diamond": {
         "position": {
-            "x": -200,
-            "y": -400
+            "x": 200,
+            "y": 400
         },
-        "win": 25
+        "win": 2
     },
     "cherry": {
         "position": {
-            "x": -400,
-            "y": -400
+            "x": 400,
+            "y": 400
         },
         "win": 2
     },
     "melon": {
         "position": {
             "x": 0,
-            "y": -600
+            "y": 600
         },
-        "win": 14
+        "win": 2
     },
     "lemon": {
         "position": {
-            "x": -200,
-            "y": -600
+            "x": 200,
+            "y": 600
         },
-        "win": 5
+        "win": 2
     },
     "plum": {
         "position": {
-            "x": -400,
-            "y": -600
+            "x": 400,
+            "y": 600
         },
-        "win": 10
+        "win": 2
     }
 }
