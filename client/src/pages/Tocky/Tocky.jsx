@@ -184,11 +184,11 @@ export default function Tocky() {
     const navigate = useNavigate();
 
     const [money, setMoney] = useState(0);
-    
-    
-    async function logout(){
+
+
+    async function logout() {
         await logoutUser();
-    
+
         dispatch(reset());
 
         navigate('/');
@@ -196,11 +196,11 @@ export default function Tocky() {
 
     // Get money
     const [updateMoney, setUpdateMoney] = useState(false);
-    
+
     const userState = useSelector((state) => state.user);
-    
+
     useEffect(() => {
-        async function asyncLoad(){
+        async function asyncLoad() {
             const userMoney = await getUserMoney(
                 userState.user.uniqueId
             );
@@ -210,26 +210,25 @@ export default function Tocky() {
 
         asyncLoad();
 
-        if(updateMoney) setUpdateMoney(false);
+        if (updateMoney) setUpdateMoney(false);
     }, [updateMoney])
 
     // Add and remove money
-    async function removeMoney(amount){
+    async function removeMoney(amount) {
         await removeAmountMoney(amount, userState.user.uniqueId);
 
         setUpdateMoney(true);
     }
 
-    async function addMoney(amount){
+    async function addMoney(amount) {
         await addAmountMoney(amount, userState.user.uniqueId);
 
         setUpdateMoney(true);
     }
 
-
     return (
         <>
-            <h1>tocky</h1>
+            <h1 className="name">Točky</h1>
             <div className="spinGrid">
                 {backgroundPosition.map((position, index) => {
                     return (
@@ -241,50 +240,41 @@ export default function Tocky() {
                     );
                 })}
             </div>
-            <div className="spinValue">
-                <button onClick={remove}>
-                    <RemoveIcon></RemoveIcon>
-                </button>
-                <p>{spinValue}</p>
-                <button onClick={add}>
-                    <AddIcon></AddIcon>
+            <div className="spinOptions">
+                <div className="spinValue">
+                    <button onClick={remove}>
+                        <RemoveIcon></RemoveIcon>
+                    </button>
+                    <p>{spinValue}</p>
+                    <button onClick={add}>
+                        <AddIcon></AddIcon>
+                    </button>
+                </div>
+                <p>Výhra: 50</p>
+                <button onClick={repeat}>
+                    <AutorenewIcon></AutorenewIcon>
                 </button>
             </div>
-            <button onClick={repeat}>
-                <AutorenewIcon></AutorenewIcon>
-            </button>
-
 
             <div className="bar">
+                <p>
+                    Zůstatek: {money}
+                </p>
+                <Link to={"/deposit"}>
+                    <Button>
+                        Vklad
+                    </Button>
+                </Link>
                 <Button variant="contained" onClick={logout}>
                     Logout
                 </Button>
-
-                <Link to={"/deposit"}>
-                    <Button>
-                        Dej peníz
-                    </Button>
-                </Link>
-
-                <p>
-                    Počet peněz:
-
-                    { money }
-                </p>
             </div>
 
-
             <div>
-                <br />
-                <br />
-                <br />
-                <br />
                 <h3>Testing</h3>
-
                 <Button onClick={() => removeMoney(50)}>
                     -50kč
                 </Button>
-
                 <Button onClick={() => addMoney(50)}>
                     +50kč
                 </Button>
