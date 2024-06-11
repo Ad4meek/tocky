@@ -14,7 +14,9 @@ export default function AppRoutes() {
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/tocky" element={
+                    <ProtectedRoute>
                         <Tocky />
+                    </ProtectedRoute>
                 } />
                 <Route path="/deposit" element={
                     <ProtectedRoute>

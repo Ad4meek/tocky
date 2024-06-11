@@ -18,6 +18,7 @@ export default function Tocky() {
     const [backgroundPosition, setBackgroundPosition] = useState(Array(16).fill("0px 0px"));
     const [winValue, setWinValue] = useState(0);
     const [canSpin, setCanSpin] = useState(true);
+    const [noMoney, setNoMoney] = useState(false);
 
     const spinTypesConstant = Object.keys(spinTypes);
 
@@ -88,6 +89,15 @@ export default function Tocky() {
     }, []);
 
     const repeat = () => {
+        if(spinValue > money){
+            setNoMoney(true);
+            
+            return;
+        }
+        
+        setNoMoney(false);
+        
+        
         console.log("točka", spinValue);
         if (!canSpin) return;
         setCanSpin(false);
@@ -363,6 +373,10 @@ export default function Tocky() {
                 <AutorenewIcon></AutorenewIcon>
             </button>
 
+            { 
+                noMoney ? <h2>Nemáte dostatek peněz</h2> : <></>
+            }
+
             <div className="bar">
                 <p>
                     Zůstatek: {money}
@@ -374,16 +388,6 @@ export default function Tocky() {
                 </Link>
                 <Button variant="contained" onClick={logout}>
                     Logout
-                </Button>
-            </div>
-
-            <div>
-                <h3>Testing</h3>
-                <Button onClick={() => removeMoney(50)}>
-                    -50kč
-                </Button>
-                <Button onClick={() => addMoney(50)}>
-                    +50kč
                 </Button>
             </div>
         </>
