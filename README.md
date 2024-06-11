@@ -1,6 +1,7 @@
 # TOČKY
 
-video - https://calipio.com/app/play/frLH7EDk#bhPNzm6v
+video - https://calip.io/zHvroKZ8#AweQEn4f
+video 2 - https://calipio.com/app/play/frLH7EDk#bhPNzm6v
 
 ## Client
 - cd client
