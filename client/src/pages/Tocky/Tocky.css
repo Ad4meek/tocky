@@ -68,9 +68,9 @@
     /* background-color: white; */
     width: 800px;
     height: 800px;
-    position: relative;
-    top: -800px;
-    left: 0;
-    margin-bottom: -782px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     /* z-index: -1; */
 }
